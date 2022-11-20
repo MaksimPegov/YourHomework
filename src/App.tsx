@@ -1,14 +1,12 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Login from './login/Login'
+import { AnimationRoutes } from './AnimationRoutes'
 
-export function App() {
+export const App: React.FC = () => {
   return (
     <div className="App">
       <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-        </Routes>
+        <AnimationRoutes />
       </BrowserRouter>
     </div>
   )
