@@ -11,10 +11,18 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material'
-import { MailOutline, VpnKey, VisibilityOff, Visibility } from '@mui/icons-material'
+import {
+  MailOutline,
+  VpnKey,
+  VisibilityOff,
+  Visibility,
+  Login as LoginIcon,
+} from '@mui/icons-material'
 import './Login.scss'
-import { loginDataValidation, onlySpaces } from '../shared/loginDataValidation'
+import { onlySpaces } from '../shared/dataValodation'
+
 import { useNavigate } from 'react-router-dom'
+import { userDataValidation } from '../shared/userDataValidation'
 
 export const Login: React.FC = () => {
   const [state, setState] = React.useState({
@@ -33,8 +41,7 @@ export const Login: React.FC = () => {
     if (
       userData.email.length > 5 &&
       userData.email.includes('@') &&
-      userData.email.includes('.') &&
-      userData.password.length > 6 &&
+      userData.password.length > 5 &&
       !onlySpaces(userData.email) &&
       !onlySpaces(userData.password)
     ) {
@@ -53,7 +60,7 @@ export const Login: React.FC = () => {
   const hadnleEmailChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setUserData((prevState) => ({
       ...prevState,
-      email: event.target.value,
+      email: event.target.value.trim(),
     }))
     setState((prevState) => ({
       ...prevState,
@@ -63,7 +70,7 @@ export const Login: React.FC = () => {
   const hadnlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setUserData((prevState) => ({
       ...prevState,
-      password: event.target.value,
+      password: event.target.value.trim(),
     }))
     setState((prevState) => ({
       ...prevState,
@@ -72,7 +79,7 @@ export const Login: React.FC = () => {
   }
 
   const handleLogin = (): void => {
-    let resp = loginDataValidation(userData)
+    let resp = userDataValidation(userData)
     if (resp.status) {
       console.log(resp.message)
       // navigate('/mainPage')
@@ -95,7 +102,10 @@ export const Login: React.FC = () => {
       exit={{ opacity: 0 }}
     >
       <div className="Login__Container">
-        <div className="Login__Container__Header">Authorization</div>
+        <div className="Login__Container__Header">
+          <LoginIcon sx={{ m: 'auto', pr: 1, fontSize: 30 }} />{' '}
+          <div className="Login__Container__Header__text">Autorization</div>
+        </div>
         <form autoComplete="off">
           <Box
             className="Container__email"
@@ -131,6 +141,7 @@ export const Login: React.FC = () => {
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
+                      tabIndex={-1}
                       aria-label="toggle password visibility"
                       onClick={hidePassword}
                     >
@@ -155,7 +166,7 @@ export const Login: React.FC = () => {
       </div>
       <div className="Login__Register">
         Don't have an account?{' '}
-        <Link href="/registration" color="inherit">
+        <Link href="/registration" color="inherit" sx={{ fontWeight: 'bold' }}>
           Registration
         </Link>
       </div>

@@ -1,15 +1,11 @@
-import { dataValidation } from './dataValodation'
-import { validateEmail } from './validateEmail'
+import { dataValidation, onlySpaces, validateEmail } from './dataValodation'
 
 export type UserData = {
   email: string
   password: string
 }
-export const onlySpaces = (str: string): boolean => {
-  return /^\s*$/.test(str)
-}
 
-export const loginDataValidation = (user: UserData) => {
+export const userDataValidation = (user: UserData) => {
   const response = {
     status: false,
     email: false,
@@ -25,6 +21,12 @@ export const loginDataValidation = (user: UserData) => {
   } else if (!passwordCheck.status) {
     response.message = passwordCheck.message
     response.password = true
+  } else if (user.email.includes(' ')) {
+    response.message = 'You cant use spaces in e-mail'
+    response.email = true
+  } else if (user.password.includes(' ')) {
+    response.message = 'You cant use spaces in password'
+    response.password = true
   } else if (!user.email || onlySpaces(user.email)) {
     response.message = 'Email is required'
     response.email = true
@@ -33,6 +35,9 @@ export const loginDataValidation = (user: UserData) => {
     response.password = true
   } else if (user.password.length < 6) {
     response.message = 'Password must be at least 6 characters'
+    response.password = true
+  } else if (user.password.length > 30) {
+    response.message = 'Password cant be longer 30 characters'
     response.password = true
   } else if (!validateEmail(user.email)) {
     response.message = 'Email is not valid'
