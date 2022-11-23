@@ -22,7 +22,7 @@ import './Login.scss'
 import { onlySpaces } from '../shared/dataValodation'
 
 import { useNavigate } from 'react-router-dom'
-import { userDataValidation } from '../shared/userDataValidation'
+import { UserData, userDataValidation } from '../shared/userDataValidation'
 
 export const Login: React.FC = () => {
   const [state, setState] = React.useState({
@@ -30,8 +30,9 @@ export const Login: React.FC = () => {
     passwordError: false,
     showPassword: false,
     canLog: false,
+    errorMessage: '',
   })
-  const [userData, setUserData] = React.useState({
+  const [userData, setUserData] = React.useState<UserData>({
     email: '',
     password: '',
   })
@@ -80,15 +81,24 @@ export const Login: React.FC = () => {
 
   const handleLogin = (): void => {
     let resp = userDataValidation(userData)
+
     if (resp.status) {
       console.log(resp.message)
       // navigate('/mainPage')
-    } else if (!resp.status && resp.email) {
+    } else if (!resp.status && resp.emailError) {
       console.log(resp.message)
-      setState((old) => ({ ...old, emailError: resp.email }))
-    } else if (!resp.status && resp.password) {
+      setState((old) => ({
+        ...old,
+        emailError: resp.emailError,
+        errorMessage: resp.message,
+      }))
+    } else if (!resp.status && resp.passwordError) {
       console.log(resp.message)
-      setState((old) => ({ ...old, passwordError: resp.password }))
+      setState((old) => ({
+        ...old,
+        passwordError: resp.passwordError,
+        errorMessage: resp.message,
+      }))
     } else {
       console.log('Something went wrong')
     }
@@ -106,9 +116,10 @@ export const Login: React.FC = () => {
           <LoginIcon sx={{ m: 'auto', pr: 1, fontSize: 30 }} />{' '}
           <div className="Login__Container__Header__text">Autorization</div>
         </div>
+
         <form autoComplete="off">
           <Box
-            className="Container__email"
+            className="Login__Container__email"
             sx={{ display: 'flex', alignItems: 'flex-end', mt: 1 }}
           >
             <MailOutline sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
@@ -121,11 +132,13 @@ export const Login: React.FC = () => {
               onChange={hadnleEmailChange}
             />
           </Box>
+
           <Box
             className="Container__password"
             sx={{ display: 'flex', alignItems: 'flex-end', mt: 1 }}
           >
             <VpnKey sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+
             <FormControl sx={{ m: 1, width: '100%' }} variant="standard">
               <InputLabel
                 htmlFor="standard-adornment-password"
@@ -133,6 +146,7 @@ export const Login: React.FC = () => {
               >
                 Password
               </InputLabel>
+
               <Input
                 id="standard-adornment-password"
                 type={state.showPassword ? 'text' : 'password'}
@@ -153,6 +167,7 @@ export const Login: React.FC = () => {
             </FormControl>
           </Box>
         </form>
+
         <Button
           className="Container__button"
           variant="contained"
@@ -163,7 +178,12 @@ export const Login: React.FC = () => {
         >
           Sign in
         </Button>
+
+        {state.emailError || state.passwordError ? (
+          <div className="Login__Container__Error">{state.errorMessage}</div>
+        ) : null}
       </div>
+
       <div className="Login__Register">
         Don't have an account?{' '}
         <Link href="/registration" color="inherit" sx={{ fontWeight: 'bold' }}>

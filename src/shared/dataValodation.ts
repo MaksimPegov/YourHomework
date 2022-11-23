@@ -1,8 +1,8 @@
-export type DataValidationResponse = {
+export type InputValidatorResponse = {
   status: boolean
   message: string
 }
-export const dataValidation = (data: string): DataValidationResponse => {
+export const inputValidator = (data: string): InputValidatorResponse => {
   let response = {
     status: true,
     message: 'Data is valid',

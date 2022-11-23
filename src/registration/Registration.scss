@@ -29,6 +29,12 @@
         margin: auto;
       }
     }
+    &__Error {
+      color: rgb(211 48 47) !important;
+      margin: auto;
+      padding-top: 15px;
+      margin-bottom: -3px;
+    }
   }
 }
 

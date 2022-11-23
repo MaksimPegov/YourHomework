@@ -17,10 +17,10 @@ import {
   Link,
 } from '@mui/material'
 import { motion } from 'framer-motion'
-// import { AnimatePresence } from 'framer-motion/dist/framer-motion'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { onlySpaces } from '../shared/dataValodation'
+import { userDataValidation } from '../shared/userDataValidation'
 import './Registration.scss'
 
 export const Registation: React.FC = () => {
@@ -33,6 +33,7 @@ export const Registation: React.FC = () => {
     showPassword2: false,
     passwordConfirm: false,
     canLog: false,
+    errorMessage: '',
   })
 
   const [userData, setUserData] = React.useState({
@@ -55,6 +56,11 @@ export const Registation: React.FC = () => {
     } else {
       setState((old) => ({ ...old, canLog: false }))
     }
+
+    setState((old) => ({
+      ...old,
+      errorMessage: '',
+    }))
   }, [userData.email, userData.password, password2])
 
   const hidePassword1 = (): void => {
@@ -96,6 +102,39 @@ export const Registation: React.FC = () => {
       ...prevState,
       passwordError2: false,
     }))
+  }
+
+  const handleLogin = (): void => {
+    if (userData.password !== password2) {
+      setState((prevState) => ({
+        ...prevState,
+        passwordError2: true,
+        errorMessage: 'Passwords do not match',
+      }))
+    } else {
+      let resp = userDataValidation(userData)
+
+      if (resp.status) {
+        console.log(resp.message)
+        // navigate('/mainPage')
+      } else if (!resp.status && resp.emailError) {
+        console.log(resp.message)
+        setState((old) => ({
+          ...old,
+          emailError: resp.emailError,
+          errorMessage: resp.message,
+        }))
+      } else if (!resp.status && resp.passwordError) {
+        console.log(resp.message)
+        setState((old) => ({
+          ...old,
+          passwordError: resp.passwordError,
+          errorMessage: resp.message,
+        }))
+      } else {
+        console.log('Something went wrong')
+      }
+    }
   }
 
   return (
@@ -194,10 +233,14 @@ export const Registation: React.FC = () => {
           color={'info'}
           disabled={!state.canLog}
           sx={{ mt: 4 }}
-          // onClick={handleLogin}
+          onClick={handleLogin}
         >
           Registrate
         </Button>
+
+        {state.emailError || state.passwordError2 || state.passwordError1 ? (
+          <div className="Login__Container__Error">{state.errorMessage}</div>
+        ) : null}
       </div>
       <div className="Registrration__Login">
         If you have an accouunt{' '}
