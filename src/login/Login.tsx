@@ -23,6 +23,7 @@ import { onlySpaces } from '../shared/dataValodation'
 
 import { useNavigate } from 'react-router-dom'
 import { UserData, userDataValidation } from '../shared/userDataValidation'
+import { userLogin } from '../shared/api/userLogin'
 
 export const Login: React.FC = () => {
   const [state, setState] = React.useState({
@@ -83,8 +84,7 @@ export const Login: React.FC = () => {
     let resp = userDataValidation(userData)
 
     if (resp.status) {
-      console.log(resp.message)
-      // navigate('/mainPage')
+      userLogin(userData)
     } else if (!resp.status && resp.emailError) {
       console.log(resp.message)
       setState((old) => ({

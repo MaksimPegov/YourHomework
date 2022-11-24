@@ -19,6 +19,7 @@ import {
 import { motion } from 'framer-motion'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { userRegistration } from '../shared/api/userRegistration'
 import { onlySpaces } from '../shared/dataValodation'
 import { userDataValidation } from '../shared/userDataValidation'
 import './Registration.scss'
@@ -115,8 +116,7 @@ export const Registation: React.FC = () => {
       let resp = userDataValidation(userData)
 
       if (resp.status) {
-        console.log(resp.message)
-        // navigate('/mainPage')
+        userRegistration(userData)
       } else if (!resp.status && resp.emailError) {
         console.log(resp.message)
         setState((old) => ({
